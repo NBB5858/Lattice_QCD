@@ -1,0 +1,11 @@
+# https://www.jetbrains.com/help/clion/quick-cmake-tutorial.html?_gl=1%2Aqt5ceh%2A_gcl_au%2ANjIxNTQ3MzAzLjE3NjE4ODkzMzc.%2AFPAU%2ANjIxNTQ3MzAzLjE3NjE4ODkzMzc.%2A_ga%2AMjEzMTgwNzc3NS4xNzYxODg5MzM3%2A_ga_9J976DJZ68%2AczE3NjE4ODkzMzQkbzEkZzAkdDE3NjE4ODkzMzQkajYwJGwwJGgw#seealso
+
+cmake_minimum_required(VERSION 3.28)
+project(Lattice_QCD VERSION 1.0)
+
+set(CMAKE_CXX_STANDARD 17)
+
+add_executable(run_simulation src/lattice.cpp
+                src/lattice.h
+                src/run_simulation_parallel.cpp
+)

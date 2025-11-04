@@ -1,0 +1,12 @@
+
+
+
+use an actual csv library
+learn about openMP and threadpools
+learn about folly, other professional thread pools
+
+lattice by lattice, the online thing that changes
+is the energy function, and the observables, once the
+dimensionality is set. Should have some subclass structure
+
+what is tbb
