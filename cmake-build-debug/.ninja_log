@@ -1,13 +1,11 @@
 # ninja log v6
-8	477	1762234491705180303	CMakeFiles/run_simulation.dir/src/lattice.cpp.o	12410265dbea4406
-2	53	1762235524302341672	build.ninja	18a80d93783396c3
-577	711	1762228841491474070	run_simulation	31e278d83290f163
+3	527	1762318611324027593	CMakeFiles/run_simulation.dir/src/io.cpp.o	2392d09de1201658
+6	2725	1762318179232813982	CMakeFiles/run_simulation.dir/src/magnetization.cpp.o	6982684ffd642ce4
 16	629	1762264655989995134	CMakeFiles/run_simulation.dir/src/lattice.cpp.o	3adbfe85ccf6dd90
-17	716	1762264655991139341	CMakeFiles/run_simulation.dir/src/run_simulation_parallel.cpp.o	cb2956511cf9599
-716	782	1762264656689599801	run_simulation	e8ff70304758f631
-4	801	1762264762419814427	CMakeFiles/run_simulation.dir/src/run_simulation_parallel.cpp.o	cb2956511cf9599
-802	873	1762264763217715354	run_simulation	e8ff70304758f631
-4	922	1762265042057630781	CMakeFiles/run_simulation.dir/src/run_simulation_parallel.cpp.o	cb2956511cf9599
-922	999	1762265042975583121	run_simulation	e8ff70304758f631
-4	808	1762265080936833571	CMakeFiles/run_simulation.dir/src/run_simulation_parallel.cpp.o	cb2956511cf9599
+6	2725	1762318179232631025	CMakeFiles/run_simulation.dir/src/energy.cpp.o	3e81a706ea2c1c7c
+1	60	1762318893968595816	build.ninja	18a80d93783396c3
 808	882	1762265081741735401	run_simulation	e8ff70304758f631
+3	828	1762318256940094695	CMakeFiles/run_simulation.dir/src/run_simulation_parallel.cpp.o	cb2956511cf9599
+1	61	1762318893968595816	build.ninja	18a80d93783396c3
+2	768	1762318938298929985	CMakeFiles/run_simulation.dir/src/run_simulation_parallel.cpp.o	cb2956511cf9599
+768	870	1762318939064954875	run_simulation	b68838b02864dac2

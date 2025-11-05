@@ -1,6 +1,4 @@
 
-
-
 use an actual csv library
 learn about openMP and threadpools
 learn about folly, other professional thread pools
@@ -10,3 +8,5 @@ is the energy function, and the observables, once the
 dimensionality is set. Should have some subclass structure
 
 what is tbb
+
+allow lattice to take in more general structure of observables

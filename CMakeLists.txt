@@ -5,7 +5,11 @@ project(Lattice_QCD VERSION 1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(run_simulation src/lattice.cpp
-                src/lattice.h
-                src/run_simulation_parallel.cpp
+add_executable(run_simulation
+        src/run_simulation_parallel.cpp
+        src/lattice.h
+        src/energy.h
+        src/magnetization.h
+        src/io.cpp
+        src/io.h
 )

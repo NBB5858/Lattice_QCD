@@ -1,24 +1,11 @@
 #include "lattice.h"
-#include <fstream>
-#include <sstream>
-#include <string>
+#include "energy.h"
+#include "magnetization.h"
+#include "io.h"
 #include <execution>
 #include <algorithm>
 
-struct Params {
-    int N;
-    double beta;
-    double B;
-    double J;
-    long long iter;
-};
-
-std::vector<Params> read_params(std::string& filename);
-double run_simulation(Params params);
-void write_results_csv(const std::string& filename,
-                       const std::vector<Params>& params,
-                       const std::vector<double>& results);
-
+double run_simulation(const Params &P);
 
 int main() {
 
@@ -38,31 +25,15 @@ int main() {
     write_results_csv("../data/results.csv", params, results);
 }
 
-std::vector<Params> read_params(std::string& filename) {
 
-    std::ifstream fin(filename);
-    if (!fin)
-        throw std::runtime_error("Error: could not open " + filename);
 
-    std::vector<Params> params;
+double run_simulation(const Params &P) {
 
-    std::string line;
-    std::getline(fin, line);
+    IsingE1D energy_model(P.J, P.B);
+    IsingM1D mag_model;
 
-    while (std::getline(fin, line)) {
-        std::stringstream ss(line);
-        Params p;
-        char comma;
+    Lattice lattice(P.N, P.beta, energy_model, mag_model);
 
-        ss >> p.N >> comma >> p.beta >> comma >> p.B >> comma >> p.J >> comma >> p.iter;
-        params.push_back(p);
-    }
-    return params;
-}
-
-double run_simulation(Params P) {
-
-    IsingLattice1D lattice(P.N, P.beta, P.J, P.B);
     double mag = lattice.mag();
 
     double mag_sum = mag;
@@ -76,25 +47,3 @@ double run_simulation(Params P) {
     return mag_sum / P.iter;
 }
 
-void write_results_csv(const std::string& filename,
-                       const std::vector<Params>& params,
-                       const std::vector<double>& results)
-{
-    std::ofstream fout(filename);
-    if (!fout)
-        throw std::runtime_error("Error: Could not open results file: " + filename);
-
-    // header
-    fout << "N,beta,B,J,iter,mag\n";
-
-    // rows
-    for (size_t i = 0; i < params.size(); ++i) {
-        const Params& p = params[i];
-        fout << p.N      << ","
-             << p.beta   << ","
-             << p.B      << ","
-             << p.J      << ","
-             << p.iter   << ","
-             << results[i] << "\n";
-    }
-}
