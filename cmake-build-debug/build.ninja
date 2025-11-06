@@ -78,6 +78,44 @@ build run_simulation: CXX_EXECUTABLE_LINKER__run_simulation_Debug CMakeFiles/run
   TARGET_FILE = run_simulation
   TARGET_PDB = run_simulation.dbg
 
+# =============================================================================
+# Object build statements for EXECUTABLE target test
+
+
+#############################################
+# Order-only phony target for test
+
+build cmake_object_order_depends_target_test: phony || CMakeFiles/test.dir
+
+build CMakeFiles/test.dir/src/test.cpp.o: CXX_COMPILER__test_unscanned_Debug /Users/noahbittermann/CLionProjects/Lattice_QCD/src/test.cpp || cmake_object_order_depends_target_test
+  DEP_FILE = CMakeFiles/test.dir/src/test.cpp.o.d
+  FLAGS = -Xpreprocessor -fopenmp -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles/test.dir
+  OBJECT_FILE_DIR = CMakeFiles/test.dir/src
+
+build CMakeFiles/test.dir/src/io.cpp.o: CXX_COMPILER__test_unscanned_Debug /Users/noahbittermann/CLionProjects/Lattice_QCD/src/io.cpp || cmake_object_order_depends_target_test
+  DEP_FILE = CMakeFiles/test.dir/src/io.cpp.o.d
+  FLAGS = -Xpreprocessor -fopenmp -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles/test.dir
+  OBJECT_FILE_DIR = CMakeFiles/test.dir/src
+
+
+# =============================================================================
+# Link build statements for EXECUTABLE target test
+
+
+#############################################
+# Link the executable test
+
+build test: CXX_EXECUTABLE_LINKER__test_Debug CMakeFiles/test.dir/src/test.cpp.o CMakeFiles/test.dir/src/io.cpp.o
+  FLAGS = -Xpreprocessor -fopenmp -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk
+  LINK_FLAGS = -L/opt/homebrew/opt/libomp/lib
+  OBJECT_DIR = CMakeFiles/test.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = test
+  TARGET_PDB = test.dbg
+
 
 #############################################
 # Utility command for edit_cache
@@ -112,7 +150,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 #############################################
 # Folder: /Users/noahbittermann/CLionProjects/Lattice_QCD/cmake-build-debug
 
-build all: phony run_simulation
+build all: phony run_simulation test
 
 # =============================================================================
 # Built-in targets
