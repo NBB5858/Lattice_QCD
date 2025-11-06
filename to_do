@@ -10,3 +10,34 @@ dimensionality is set. Should have some subclass structure
 what is tbb
 
 allow lattice to take in more general structure of observables
+
+give attributes in class better names, they're too long
+
+
+make the policies structs
+why did you put the template header in the policy functions themselves?
+
+
+
+
+Note for the read me
+
+One may notice that there is a lot of repeated code from class to class.
+At a glance, this could avoided with a policy-based design and class templates.
+e.g., we could have a template for a lattice of generic dimension taking in generic energy policy
+and a generic policy for observables.
+
+However, to completely define e.g. the energy policy, it must be aware of the lattice's values
+(e.g. in nearest neighbors, we sum over the values adjacent lattice points).  This creates
+a very awkward circularity, where the lattice class depends on the energy policy which depends on
+the lattice class.  This is tricky to break, and annoying to maintain / debug.
+
+Our solution will just be to repeat code.  Our goal is to make interesting scientific measurements,
+not to build good software that no one will use anyway.  We'll view each each class as a separate experiment.
+
+
+
+
+
+
+

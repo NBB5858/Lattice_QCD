@@ -13,3 +13,12 @@ add_executable(run_simulation
         src/io.cpp
         src/io.h
 )
+
+add_executable(test
+        src/test.cpp
+        src/lattice.h
+        src/energy.h
+        src/magnetization.h
+        src/io.cpp
+        src/io.h
+)

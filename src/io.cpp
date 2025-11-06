@@ -20,7 +20,7 @@ std::vector<Params> read_params(const std::string& filename) {
         Params p;
         char comma;
 
-        ss >> p.N >> comma >> p.beta >> comma >> p.B >> comma >> p.J >> comma >> p.iter;
+        ss >> p.X >> comma >> p.Y >> comma >> p.Z >> comma >> p.beta >> comma >> p.B >> comma >> p.J >> comma >> p.iter;
         params.push_back(p);
     }
     return params;
@@ -35,12 +35,14 @@ void write_results_csv(const std::string& filename,
         throw std::runtime_error("Error: Could not open results file: " + filename);
 
     // header
-    fout << "N,beta,B,J,iter,mag\n";
+    fout << "X, Y, Z, beta,B,J,iter,mag\n";
 
     // rows
     for (size_t i = 0; i < params.size(); ++i) {
         const Params& p = params[i];
-        fout << p.N      << ","
+        fout << p.X      << ","
+             << p.Y      << ","
+             << p.Z      << ","
              << p.beta   << ","
              << p.B      << ","
              << p.J      << ","

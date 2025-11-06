@@ -5,7 +5,9 @@
 #include <vector>
 
 struct Params {
-    int N;
+    int X;
+    int Y;
+    int Z;
     double beta;
     double B;
     double J;

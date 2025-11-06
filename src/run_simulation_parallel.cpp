@@ -29,13 +29,17 @@ int main() {
 
 double run_simulation(const Params &P) {
 
-    IsingE1D energy_model(P.J, P.B);
-    IsingM1D mag_model;
+    //IsingE1D energy_model(P.J, P.B);
+    //IsingM1D mag_model;
 
-    Lattice lattice(P.N, P.beta, energy_model, mag_model);
+    IsingE2D energy_model(P.J, P.B);
+    IsingM2D mag_model;
+
+    std::array<int,3> dims = {P.X, P.Y, P.Z};
+
+    Lattice lattice(dims, P.beta, energy_model, mag_model);
 
     double mag = lattice.mag();
-
     double mag_sum = mag;
     for( long long _ = 1; _ < P.iter; _++) {
         lattice.metro_iter();
