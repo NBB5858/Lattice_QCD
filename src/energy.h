@@ -3,91 +3,77 @@
 
 #include <array>
 
-template <typename EnergyModel, typename MagModel>
+template <typename EnergyModel, typename MagModel, int D>
 class Lattice;
 
 
-class IsingE1D {
-public:
-    IsingE1D( double J, double B ) : B(B), J(J) {};
+struct IsingE1D {
+    IsingE1D( double J, double B ) : B_(B), J_(J), size_x(0) {};
 
-    template<typename E, typename M>
-    double total_energy( const Lattice<E, M> &L ) const {
-        int size_x = L.shape()[0];
+    template<typename E, typename M, int D>
+    void bind_geometry( const Lattice<E, M, D> &L ) { size_x = L.shape()[0]; }
+
+    template<typename E, typename M, int D>
+    double total_energy( const Lattice<E, M, D> &L ) const {
         double total_energy = 0;
-        for(int i = 0; i < size_x; ++i) {
-            int left = (i == 0) ? size_x - 1 : i - 1;
-            total_energy += -J * L(i) * L(left) - B * L(i);
-        }
+        for(int i = 0; i < size_x; ++i) total_energy += -J_ * L(i) * L(wrap_l(i-1)) - B_ * L(i);
         return total_energy;
     };
 
-    template<typename E, typename M>
-    double dE( const Lattice<E, M> &L, std::array<int,3> xyz) const {
-        int x = xyz[0];
-
-        int left = (x == 0) ? L.shape()[0] - 1 : x - 1;
-        int right = (x == L.shape()[0] - 1) ? 0 : x + 1;
-
-        double dlink_energy = 2*J*L(x) * ( L(left) + L(right) );
-        double dmag_energy = 2*B*L(x);
-
-        return  dlink_energy + dmag_energy;
+    template<typename E, typename M, int D>
+    double dE( const Lattice<E, M, D> &L, std::array<int,D> site) const {
+        int x = site[0];
+        return  2*J_*L(x) * ( L(wrap_l(x-1)) + L(wrap_r(x+1) ) + 2*B_*L(x) ) ;
     };
 
-private:
-    double B;
-    double J;
+    int wrap_l(int p) const {return (p == -1 ? size_x - 1 : p);}
+    int wrap_r(int p) const {return (p == size_x ? 0 : p);}
+
+    double B_, J_;
+    int size_x;
 };
 
 
-class IsingE2D {
-public:
-    IsingE2D( double J, double B ) : B(B), J(J) {};
+struct IsingE2D {
+    IsingE2D( double J, double B ) : B_(B), J_(J), size_x(0), size_y(0), size(0){};
 
-    template<typename E, typename M>
-    double total_energy( const Lattice<E, M> &L ) const {
-        auto shape = L.shape();
-        int x = shape[0];
-        int y = shape[1];
+    template<typename E, typename M, int D>
+    void bind_geometry( const Lattice<E, M, D> &L ) {
+        auto [nx, ny] = L.shape(); size_x=nx, size_y=ny; size=size_x*size_y;
+    }
+
+    template<typename E, typename M, int D>
+    double total_energy( const Lattice<E, M, D> &L ) const {
 
         double total_energy = 0;
-        for(int i = 0; i < x; ++i) {
-            for(int j = 0; j < y; ++j) {
-                int left = (i == 0) ? x - 1 : i - 1;
-                int up = (j == 0) ? y - 1 : j - 1;
-
-                total_energy += -J * L(i, j) * (L(left, j) + L(i, up)) - B * L(i, j);
-
+        for(int i = 0; i < size_x; ++i) {
+            for(int j = 0; j < size_y; ++j) {
+                total_energy += -J_ * L(i, j) * ( L(wrap_l(i-1), j) + L(i, wrap_u(j-1)) ) - B_ * L(i, j);
             }
         }
         return total_energy;
     };
 
-    template<typename E, typename M>
-    double dE( const Lattice<E, M> &L, std::array<int,3> xyz) const {
-        auto shape = L.shape();
-        int size_x = shape[0];
-        int size_y = shape[1];
+    template<typename E, typename M, int D>
+    double dE( const Lattice<E, M, D> &L, std::array<int,D> xy) const {
+        auto [i, j] = xy;
 
-        int i = xyz[0];
-        int j = xyz[1];
-
-        int left = (i == 0) ? size_x - 1 : i - 1;
-        int right = (i == size_x - 1) ? 0 : i + 1;
-
-        int up = (j == 0) ? size_y - 1 : j - 1;
-        int down = (j == size_y - 1) ? 0 : j + 1;
-
-        double dlink_energy = 2*J*L(i, j) * ( L(left, j) + L(right, j) + L(i, up) + L(i, down) );
-        double dmag_energy = 2*B*L(i, j);
+        double dlink_energy = 2*J_*L(i, j) * ( L(wrap_l(i-1), j) + L(wrap_r(i+1), j) + L(i, wrap_u(j-1)) + L(i, wrap_d(j+1)) );
+        double dmag_energy = 2*B_*L(i, j);
 
         return  dlink_energy + dmag_energy;
     };
 
-private:
-    double B;
-    double J;
+    int wrap_l(int p) const {return (p == -1 ? size_x - 1 : p);}
+    int wrap_r(int p) const {return (p == size_x ? 0 : p);}
+
+    int wrap_u(int p) const {return (p == -1 ? size_y - 1 : p);}
+    int wrap_d(int p) const {return (p == size_y ? 0 : p);}
+
+    double B_, J_;
+    int size_x, size_y;
+    double size;
+
 };
 
 #endif //ENERGY_H

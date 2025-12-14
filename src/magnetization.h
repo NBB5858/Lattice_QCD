@@ -1,56 +1,60 @@
 #ifndef MAGNETIZATION_H
 #define MAGNETIZATION_H
 
-template <typename EnergyModel, typename MagModel>
+template <typename EnergyModel, typename MagModel, int D>
 class Lattice;
 
 
-class IsingM1D {
-public:
+struct IsingM1D {
     IsingM1D() = default;
 
-    template<typename E, typename M>
-    double total_mag( const Lattice<E, M> &L ) const {
-        double total_mag = 0;
-        for(int i = 0; i < L.shape()[0]; ++i) {
-            total_mag += L(i);
-        }
-        return total_mag / static_cast<double>(L.size());
+    template<typename E, typename M, int D>
+    void bind_geometry( const Lattice<E, M, D> &L ) { size_x = L.shape()[0]; }
+
+    template<typename E, typename M, int D>
+    double total_mag( const Lattice<E, M, D> &L ) const {
+        double total_mag = 0; for(int i = 0; i < size_x; ++i) total_mag += L(i);
+        return total_mag / static_cast<double>(size_x);
     };
 
-    template<typename E, typename M>
-    double dM( const Lattice<E, M> &L, std::array<int,3> xyz) const {
-        int x = xyz[0];
-        return -2*L(x) / static_cast<double>(L.size());
+    template<typename E, typename M, int D>
+    double dM( const Lattice<E, M, D> &L, std::array<int,D> site) const {
+        int x = site[0];
+        return -2*L(x) / static_cast<double>(size_x);
     };
+
+    int size_x;
 };
 
 
-class IsingM2D {
-public:
+struct IsingM2D {
     IsingM2D() = default;
 
-    template<typename E, typename M>
-    double total_mag( const Lattice<E, M> &L ) const {
-        auto shape = L.shape();
-        int x = shape[0];
-        int y = shape[1];
+    template<typename E, typename M, int D>
+    void bind_geometry( const Lattice<E, M, D> &L ) {
+        auto [nx, ny] = L.shape(); size_x=nx, size_y=ny; size=size_x*size_y;
+    }
 
+    template<typename E, typename M, int D>
+    double total_mag( const Lattice<E, M, D> &L ) const {
         double total_mag = 0;
-        for(int i = 0; i < x; ++i) {
-            for(int j = 0; j < y; ++j) {
+        for(int i = 0; i < size_x; ++i) {
+            for(int j = 0; j < size_y; ++j) {
                 total_mag += L(i, j);
             }
         }
-        return total_mag / static_cast<double>(L.size());
+        return total_mag / size;
     };
 
-    template<typename E, typename M>
-    double dM( const Lattice<E, M> &L, std::array<int,3> xyz) const {
-        int x = xyz[0];
-        int y = xyz[1];
-        return -2*L(x, y) / static_cast<double>(L.size());
+    template<typename E, typename M, int D>
+    double dM( const Lattice<E, M, D> &L, std::array<int,D> xy) const {
+        auto [x, y] = xy;
+        return -2*L(x, y) / size;
     };
+
+    int size_x, size_y;
+    double size;
+
 };
 
 #endif //MAGNETIZATION_H

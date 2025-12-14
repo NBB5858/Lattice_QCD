@@ -29,15 +29,12 @@ int main() {
 
 double run_simulation(const Params &P) {
 
-    //IsingE1D energy_model(P.J, P.B);
-    //IsingM1D mag_model;
-
     IsingE2D energy_model(P.J, P.B);
     IsingM2D mag_model;
 
-    std::array<int,3> dims = {P.X, P.Y, P.Z};
+    std::array<int,2> dims = {P.X, P.Y};
 
-    Lattice lattice(dims, P.beta, energy_model, mag_model);
+    Lattice<IsingE2D, IsingM2D, 2> lattice(dims, P.beta, energy_model, mag_model);
 
     double mag = lattice.mag();
     double mag_sum = mag;
