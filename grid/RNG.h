@@ -8,7 +8,7 @@
 
 class RandNormal {
 public:
-    RandNormal(double mean=0.0, double stddev=1.0, unsigned int seed=42) :
+    RandNormal(double mean, double stddev, unsigned int seed):
     _gen(seed),
     _mean(mean),
     _stddev(stddev),
@@ -26,7 +26,7 @@ private:
 
 class RandUniform {
 public:
-    RandUniform(double low=0.0, double high=1.0, unsigned int seed=42) :
+    RandUniform(double low, double high, unsigned int seed):
     _low(low),
     _high(high),
     _gen(seed),

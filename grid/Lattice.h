@@ -16,7 +16,8 @@ class VectorField;
 template<class FieldType>
 class Lattice : public LatticeBase {
 public:
-    const GridBase* grid() const { return _grid; }
+    GridBase* grid() const { return _grid; }
+    //const GridBase* grid() const { return _grid; }
 
     explicit Lattice(GridBase* grid) : _grid(grid) {
         std::vector<int> dims = grid->_dims;
@@ -35,7 +36,7 @@ public:
     }
 
     template <typename T1,
-              typename std::enable_if<is_lattice_expr<T1>::value,T1>::type * = nullptr>
+              typename = std::enable_if_t<is_lattice_expr<T1>::value>>
     inline Lattice& operator=(const T1 &expr) {
         thread_for(ss, _grid->_osites, {
             auto tmp = eval(ss, expr);
@@ -45,7 +46,7 @@ public:
     };
 
     template <typename T1,
-              typename std::enable_if<is_lattice<T1>::value||is_lattice_expr<T1>::value,T1>::type * = nullptr>
+              typename std::enable_if<is_lattice<T1>::value || is_lattice_expr<T1>::value, int>::type = 0>
     inline Lattice& operator+=(const T1 &expr) {
         thread_for(ss, _grid->_osites, {
             auto tmp = eval(ss, expr);
@@ -55,7 +56,7 @@ public:
     };
 
     template <typename T1,
-                  typename std::enable_if<is_lattice<T1>::value||is_lattice_expr<T1>::value,T1>::type * = nullptr>
+              typename std::enable_if<is_lattice<T1>::value || is_lattice_expr<T1>::value, int>::type = 0>
     inline Lattice& operator-=(const T1 &expr) {
         thread_for(ss, _grid->_osites, {
             auto tmp = eval(ss, expr);
@@ -64,7 +65,9 @@ public:
         return *this;
     }
 
-    FieldType operator()(int ss) const {return _mem[ss];}
+//    FieldType operator()(int ss) const {return _mem[ss];}
+    const FieldType& operator()(int ss) const { return _mem[ss]; }
+
 
     void FlatPrint() const {
         for( FieldType SiteField : _mem) { SiteField.print(); std::cout << " ";};

@@ -69,7 +69,7 @@ public:
 
     friend VectorField operator/(const VectorField& V, double c) {
         int d = V._val.size();
-        VectorField ret(d); for(int i=0; i < d; ++i) ret[i] = c*V._val[i];
+        VectorField ret(d); for(int i=0; i < d; ++i) ret[i] = V._val[i]/c;
         return ret;
     }
 

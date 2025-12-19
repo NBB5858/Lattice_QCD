@@ -36,7 +36,7 @@ template <typename T> using is_lattice_expr = std::is_base_of<LatticeExpression,
  ********************/
 #define GridUnopClass(name, ret)					\
 struct name {								\
-template<class _arg> static auto func(const _arg a) -> decltype(ret) { return ret; } \
+template<class _arg> static auto func(const _arg& a) -> decltype(ret) { return ret; } \
 };
 
 #define GRID_UNOP(name)  name
@@ -51,7 +51,7 @@ inline auto op(const T1 &arg) ->decltype(LatticeUnaryExpression<GRID_UNOP(name),
  ********************/
 #define GridExtUnOpClass(name, ret)					\
 struct name {								\
-template<class _arg> static auto func(const uint64_t ss, const _arg a) -> decltype(ret) { return ret; } \
+template<class _arg> static auto func(const uint64_t ss, const _arg& a) -> decltype(ret) { return ret; } \
 };
 
 GridExtUnOpClass(UnaryGrad, Grad(ss, a));
@@ -73,7 +73,7 @@ GRID_DEF_EXTENDED_UNOP(box, UnaryBox);
 #define GridBinOpClass(name, combination) \
 struct name { \
 template <class _left, class _right> \
-static auto func(const _left &lhs, const _right &rhs) -> decltype(combination) const \
+static auto func(const _left &lhs, const _right &rhs) -> decltype(combination) \
 { return combination; } \
 };
 
@@ -162,7 +162,7 @@ template <typename Op, typename T1>
 class LatticeUnaryExpression : public LatticeExpression {
 public:
     Op op;
-    T1 arg;
+    wrap<T1> arg;
     LatticeUnaryExpression(Op op, const T1 &arg) : op(op), arg(arg) {}
 };
 
@@ -170,7 +170,7 @@ template <typename Op, typename T1>
 class LatticeExtendedUnaryExpression : public LatticeExpression {
 public:
     Op op;
-    T1 arg;
+    wrap<T1> arg;
     LatticeExtendedUnaryExpression(Op op, const T1 &arg) : op(op), arg(arg) {}
 };
 

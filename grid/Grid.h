@@ -37,6 +37,7 @@ public:
     }
 
     int osites() const { return _osites; }
+    std::vector<int> dims() const { return _dims; }
 
 private:
     std::vector<int> _dims;

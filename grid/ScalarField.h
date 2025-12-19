@@ -8,14 +8,9 @@ class ScalarField {
 public:
     ScalarField() : _val(0.0){}
     explicit ScalarField(int /*d*/) : _val(0.0){} // Get rid of this ASAP
-    explicit ScalarField(int /*d*/, double val) : _val(0.0){} // Get rid of this ASAP
+    explicit ScalarField(int /*d*/, double val) : _val(val){} // Get rid of this ASAP
     explicit ScalarField(double val) : _val(val){}
     void print() const { std::cout << _val; }
-
-    // static inline void generate_momenta(ScalarField& P, pRNG) {
-    //     gaussian(pRNG, P);
-    //     P = std::sqrt(2) * P;
-    // }
 
     double val() const { return _val; }
 

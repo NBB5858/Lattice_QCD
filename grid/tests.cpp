@@ -105,3 +105,10 @@ V = V1 + V2;
 //
 // Rho = box(Gamma);
 // Rho.Print2D();
+
+
+// //auto start = std::chrono::high_resolution_clock::now();
+    // hmc.Run();
+    //
+    // //auto stop = std::chrono::high_resolution_clock::now();
+    // //auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
