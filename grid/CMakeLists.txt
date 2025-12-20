@@ -18,6 +18,25 @@ add_executable(run_sim run_sim.cpp
         RNG.h
         observables.h
         io.cpp
+        GaugeField.h
+)
+
+add_executable(run_sim_gauge run_sim_gauge.cpp
+        Grid.h
+        lattice.h
+        ScalarField.h
+        VectorField.h
+        Stencil.h
+        Expression.h
+        pragma_shorts.h
+        Action.h
+        Reductions.h
+        Action.h
+        HMC.h
+        RNG.h
+        observables.h
+        io.cpp
+        GaugeField.h
 )
 
 #add_executable(tests tests.cpp
@@ -32,5 +51,7 @@ add_executable(run_sim run_sim.cpp
 
 find_package(OpenMP REQUIRED)
 target_link_libraries(run_sim PRIVATE OpenMP::OpenMP_CXX)
+target_link_libraries(run_sim_gauge PRIVATE OpenMP::OpenMP_CXX)
+
 
 

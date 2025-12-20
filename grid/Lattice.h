@@ -26,7 +26,7 @@ public:
     };
 
     template<typename RNG>
-    void Randomize( int ss, RNG& rng ) {
+    void Randomize(int ss, RNG& rng) {
         _mem[ss].Randomize(rng);
     }
 
@@ -65,9 +65,7 @@ public:
         return *this;
     }
 
-//    FieldType operator()(int ss) const {return _mem[ss];}
     const FieldType& operator()(int ss) const { return _mem[ss]; }
-
 
     void FlatPrint() const {
         for( FieldType SiteField : _mem) { SiteField.print(); std::cout << " ";};
@@ -120,6 +118,29 @@ public:
         }
         return ret;
     }
+
+    //
+    // if the lattice type is a vector of gauge fields, then this should be defined
+
+    // template<typename GaugeField>
+    // GaugeField plaquette(int ss, int mu, int nu, const Lattice<VectorField<GaugeField>>& U, GridBase* grid ) {
+    //
+    //     int ss;
+    //     int right = grid->_stencil.neighbors[ss].p[mu];
+    //     int up = grid->_stencil.neighbors[ss].p[nu];
+    //     int right_up = grid->_stencil.neighbors[right].p[nu];
+    //
+    //     // each site stores just a field, not a field and it's inverse
+    //     U(ss)[mu] * U(right)[nu] * inverse(U(up)[mu]) * inverse(U(ss)[nu]);
+    //
+    // }
+
+
+
+
+
+
+
 
 private:
     GridBase* _grid;
