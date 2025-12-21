@@ -10,19 +10,18 @@
 
 class LatticeBase {};
 
-template<typename FieldType>
+template<typename FieldType, int d>
 class VectorField;
 
-template<class FieldType>
+template<class FieldType, int d>
 class Lattice : public LatticeBase {
 public:
-    GridBase* grid() const { return _grid; }
-    //const GridBase* grid() const { return _grid; }
+    GridBase<d>* grid() const { return _grid; }
 
-    explicit Lattice(GridBase* grid) : _grid(grid) {
-        std::vector<int> dims = grid->_dims;
-        _mem.reserve(_grid->_osites); // why can't this be reserve?
-        for(int i = 0; i < _grid->_osites; ++i) _mem.emplace_back(FieldType(static_cast<int>(dims.size()))); // not used if FieldType is ScalarField
+    explicit Lattice(GridBase<d>* grid) : _grid(grid) {
+        std::array<int, d> dims = grid->_dims;
+        _mem.reserve(_grid->_osites);
+        for(int i = 0; i < _grid->_osites; ++i) _mem.emplace_back();
     };
 
     template<typename RNG>
@@ -30,7 +29,6 @@ public:
         _mem[ss].Randomize(rng);
     }
 
-    // for debugging
     void put(int i, FieldType field) {
         _mem[i] = field;
     }
@@ -81,7 +79,7 @@ public:
 
         for (int j = 0; j < ny; ++j) {
             for (int i = 0; i < nx; ++i) {
-                std::vector<int> coord = {i, j};
+                std::vector coord = {i, j};
                 int ss = _grid->_stencil.unravel(coord);  // coord -> site index
                 _mem[ss].print();
                 std::cout << " ";
@@ -91,12 +89,12 @@ public:
     }
 
     // make new friends idiom; creates a new grad for each specialization of lattice
-    friend VectorField<FieldType> Grad( int ss, const Lattice& lat ) {
+    // use SINFAE to ensure this doesn't operate on U_{mu}?
+    friend VectorField<FieldType, d> Grad( int ss, const Lattice& lat ) {
 
-        int D = lat._grid->_dims.size();
-        VectorField<FieldType> ret(D); // may rely on stupid constructor
+        VectorField<FieldType, d> ret;
 
-        for(int dir=0; dir < D; ++dir) {
+        for(int dir=0; dir < d; ++dir) {
             int p = lat._grid->_stencil.neighbors[ss].p[dir];
             int m = lat._grid->_stencil.neighbors[ss].m[dir];
 
@@ -107,10 +105,9 @@ public:
 
     friend FieldType Box( int ss, const Lattice& lat ) {
 
-        int D = lat._grid->_dims.size();
-        FieldType ret(lat._grid->_dims.size(), 0.0); // relies on stupid constructors
+        FieldType ret;
 
-        for(int dir=0; dir < D; ++dir) {
+        for(int dir=0; dir < d; ++dir) {
             int p = lat._grid->_stencil.neighbors[ss].p[dir];
             int m = lat._grid->_stencil.neighbors[ss].m[dir];
 
@@ -120,7 +117,7 @@ public:
     }
 
     //
-    // if the lattice type is a vector of gauge fields, then this should be defined
+    // if the lattice type is a vector of gauge fields, then this should be defined. use SINFAE?
 
     // template<typename GaugeField>
     // GaugeField plaquette(int ss, int mu, int nu, const Lattice<VectorField<GaugeField>>& U, GridBase* grid ) {
@@ -143,7 +140,7 @@ public:
 
 
 private:
-    GridBase* _grid;
+    GridBase<d>* _grid;
     std::vector<FieldType> _mem;
 };
 

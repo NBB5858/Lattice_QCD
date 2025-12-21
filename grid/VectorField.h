@@ -4,19 +4,17 @@
 #include <iostream>
 
 
-template<typename FieldType>
+template<typename FieldType, int d>
 class VectorField {
 public:
-    VectorField() = default;
-    explicit VectorField(int d) : _val(d, FieldType()) {}
-    VectorField(int d, FieldType el) : _val(d, el) {}
-    VectorField(int d, double el) : _val(d) {
-        for(int i=0; i<d; ++i) _val[i] = FieldType(el);
-    }
 
+    VectorField() {for(int i=0; i<d; ++i) _val[i] = FieldType();}
+    explicit VectorField(FieldType el) {for(int i=0; i<d; ++i) _val[i] = el;}
+
+    // BE AFRAID OF GOING OOB. Where is this used? make this private?
     FieldType& operator[](int i) { return _val[i]; }
 
-    const std::vector<FieldType>& val() const { return _val; }
+    const std::array<FieldType, d>& val() const { return _val; }
 
     void print() { std::cout << "("; for( FieldType el : _val ){el.print(); std::cout << ",";} std::cout << ")"; }
 
@@ -27,60 +25,51 @@ public:
 
     template<typename RNG>
     void Randomize(RNG& rng) {
-        int d = this->_val.size();
         for(int i=0; i<d; ++i) _val[i].Randomize(rng);
     }
 
     VectorField& operator +=(const VectorField& other) {
-        int d = this->_val.size();
         for(int i=0; i<d; ++i) this->_val[i] += other._val[i];
         return *this;
     }
 
     VectorField& operator -=(const VectorField& other) {
-        int d = this->_val.size();
         for(int i=0; i<d; ++i) this->_val[i] -= other._val[i];
         return *this;
     }
 
     friend VectorField operator+(const VectorField&  V1, const VectorField& V2) {
-        int d = V1._val.size();
-        VectorField ret(d); for(int i=0; i < d; ++i) ret[i] = V1._val[i] + V2._val[i];
+        VectorField ret; for(int i=0; i < d; ++i) ret[i] = V1._val[i] + V2._val[i];
         return ret;
     }
 
     friend VectorField operator-(const VectorField&  V1, const VectorField& V2) {
-        int d = V1._val.size();
-        VectorField ret(d); for(int i=0; i < d; ++i) ret[i] = V1._val[i] - V2._val[i];
+        VectorField ret; for(int i=0; i < d; ++i) ret[i] = V1._val[i] - V2._val[i];
         return ret;
     }
 
     friend VectorField operator*(double c, const VectorField& V) {
-        int d = V._val.size();
-        VectorField ret(d); for(int i=0; i < d; ++i) ret[i] = c*V._val[i];
+        VectorField ret; for(int i=0; i < d; ++i) ret[i] = c*V._val[i];
         return ret;
     }
 
     friend VectorField operator*(const VectorField& V, double c) {
-        int d = V._val.size();
-        VectorField ret(d); for(int i=0; i < d; ++i) ret[i] = c*V._val[i];
+        VectorField ret; for(int i=0; i < d; ++i) ret[i] = c*V._val[i];
         return ret;
     }
 
     friend VectorField operator/(const VectorField& V, double c) {
-        int d = V._val.size();
-        VectorField ret(d); for(int i=0; i < d; ++i) ret[i] = V._val[i]/c;
+        VectorField ret; for(int i=0; i < d; ++i) ret[i] = V._val[i]/c;
         return ret;
     }
 
     friend FieldType dot(const VectorField& V1, const VectorField& V2) {
-        int d = V1._val.size();
         FieldType ret(0.0); for(int i=0; i < d; ++i) ret = ret +  V1._val[i] * V2._val[i];
         return ret;
     }
 
 private:
-    std::vector<FieldType> _val;
+    std::array<FieldType, d> _val;
 };
 
 

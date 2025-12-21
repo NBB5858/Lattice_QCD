@@ -6,7 +6,8 @@
 #include "Expression.h"
 
 // functions for integrating densities
-inline double sum( const Lattice<ScalarField>& expr, const GridBase* grid ) {
+template<int d>
+inline double sum( const Lattice<ScalarField, d>& expr, const GridBase<d>* grid ) {
     double ret = 0.0;
     thread_sum(ss, grid->osites(), ret, {
         ret += eval(ss, expr).val();
@@ -14,8 +15,8 @@ inline double sum( const Lattice<ScalarField>& expr, const GridBase* grid ) {
     return ret;
 }
 
-template<typename Op, typename T1>
-double sum( const LatticeUnaryExpression<Op, T1>& expr, const GridBase* grid ) {
+template<typename Op, typename T1, int d>
+double sum( const LatticeUnaryExpression<Op, T1>& expr, const GridBase<d>* grid ) {
     double ret = 0.0;
     thread_sum(ss, grid->osites(), ret, {
         ret += eval(ss, expr).val();
@@ -33,8 +34,8 @@ double sum( const LatticeUnaryExpression<Op, T1>& expr, const GridBase* grid ) {
 // }
 
 
-template<typename Op, typename T1, typename T2>
-double sum( const LatticeBinaryExpression<Op, T1, T2>& expr, const GridBase* grid ) {
+template<typename Op, typename T1, typename T2, int d>
+double sum( const LatticeBinaryExpression<Op, T1, T2>& expr, const GridBase<d>* grid ) {
     double ret = 0.0;
     thread_sum(ss, grid->osites(), ret, {
         // relies on knowing eval will return a scalar field

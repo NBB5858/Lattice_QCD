@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
+#include <array>
 
 #include "Grid.h"
 #include "Lattice.h"
@@ -80,8 +81,11 @@ int main() {
     GridThread::SetMaxThreads();
     std::cout << "Threads: " << GridThread::GetThreads() << std::endl;
 
-    std::vector<int> dims({5, 5, 5});
-    GridBase Grid(dims);
+    constexpr int dimension = 2;
+    constexpr std::array<int, dimension> dims({5, 5});
+
+
+    GridBase<dimension> Grid(dims);
 
     for( Params P : params) {
         double mass2 = P.mass2;
@@ -110,7 +114,7 @@ int main() {
         const ScalarAction action(mass2, lambda);
         Magnetization mag(nsteps);
 
-        HMC<ScalarField, ScalarAction, RandNormal, Magnetization> hmc(nsteps, action, Prng, Phirng, epsilon, Lsteps,
+        HMC<dimension, ScalarField, ScalarAction, RandNormal, Magnetization> hmc(nsteps, action, Prng, Phirng, epsilon, Lsteps,
                                                                       base_seed, &Grid, mag);
 
         hmc.Run();

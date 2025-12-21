@@ -12,8 +12,8 @@ class Magnetization {
 public:
     explicit Magnetization(int nobs) : _nobs(nobs) {_cache.reserve(_nobs);}
 
-    template<typename FieldType>
-    void measure(const Lattice<FieldType>& U) {
+    template<typename FieldType, int d>
+    void measure(const Lattice<FieldType, d>& U) {
         // divide by spatial lattice sites and euclidean times sites
         double mag = sum(U, U.grid()) / U.grid()->osites();
         _cache.emplace_back(mag);

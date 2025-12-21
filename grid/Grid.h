@@ -1,6 +1,8 @@
 #ifndef GRID_H
 #define GRID_H
 
+#include <array>
+
 #include "pragma_shorts.h"
 #include "Stencil.h"
 
@@ -28,20 +30,21 @@ public:
     }
 };
 
+
+template<int d>
 class GridBase : public GridThread {
 public:
-
-    template<class object> friend class Lattice;
-    explicit GridBase(const std::vector<int>& dims) : _dims(dims), _stencil(dims) {
-        _osites = std::accumulate(begin(dims), end(dims), 1, std::multiplies<>());
+    template<class object, int dimension> friend class Lattice;
+    explicit GridBase(const std::array<int, d>& dims) : _dims(dims), _stencil(dims) {
+        _osites = std::accumulate(dims.begin(), dims.end(), 1, std::multiplies<>());
     }
 
     int osites() const { return _osites; }
-    std::vector<int> dims() const { return _dims; }
+    std::array<int, d> dims() const { return _dims; }
 
 private:
-    std::vector<int> _dims;
-    Stencil _stencil;
+    std::array<int, d> _dims;
+    Stencil<d> _stencil;
     int _osites;
 };
 

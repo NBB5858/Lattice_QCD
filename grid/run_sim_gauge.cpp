@@ -80,11 +80,11 @@ int main() {
     GridThread::SetMaxThreads();
     std::cout << "Threads: " << GridThread::GetThreads() << std::endl;
 
-    std::vector<int> dims({5, 5});
-    GridBase Grid(dims);
+    std::array<int, 2> dims({5, 5});
+    GridBase<2> Grid(dims);
 
 
-    Lattice<GaugeField<Z2GroupElement>> U(&Grid);
+    Lattice<GaugeField<Z2GroupElement>, 2> U(&Grid);
 
 
 

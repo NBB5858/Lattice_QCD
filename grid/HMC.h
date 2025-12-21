@@ -22,11 +22,11 @@ struct Logger {
 };
 
 // To Do: Break this up
-template<typename FieldType, typename ActionType, typename RNGType, typename... Obs >
+template<int d, typename FieldType, typename ActionType, typename RNGType, typename... Obs >
 class HMC {
 public:
 
-    HMC(int nsteps, ActionType action, RNGType Prng, RNGType Phirng, double epsilon, int Lsteps, unsigned int base_seed, GridBase* grid, Obs&... obs) :
+    HMC(int nsteps, ActionType action, RNGType Prng, RNGType Phirng, double epsilon, int Lsteps, unsigned int base_seed, GridBase<d>* grid, Obs&... obs) :
         _nsteps(nsteps),
         _action(action),
         _grid(grid),
@@ -48,9 +48,9 @@ public:
         _log.nsteps = _nsteps;
     }
 
-    const Lattice<FieldType>& Lat() const {return _phi;}
+    const Lattice<FieldType, d>& Lat() const {return _phi;}
 
-    void RandomizeLattice( Lattice<ScalarField>& L, std::vector<RNGType>& rngs ) {
+    void RandomizeLattice( Lattice<ScalarField, d>& L, std::vector<RNGType>& rngs ) {
         thread_for(ss, _grid->osites(), {
             int thread = thread_num(ss);
             L.Randomize(ss, rngs[thread]);
@@ -58,11 +58,11 @@ public:
     }
 
     void hmc_step() {
-        Lattice<FieldType> P(_grid);
+        Lattice<FieldType, d> P(_grid);
         RandomizeLattice(P, _Prngs);
 
         // make a copy constructor
-        Lattice<FieldType> phi_tmp(_grid);
+        Lattice<FieldType, d> phi_tmp(_grid);
         phi_tmp = _phi;
 
         double initial = sum(0.5*P*P, _grid) + _action.S(_phi);
@@ -103,8 +103,8 @@ public:
 private:
     int _nsteps;
     ActionType _action;
-    GridBase* _grid;
-    Lattice<FieldType> _phi;
+    GridBase<d>* _grid;
+    Lattice<FieldType, d> _phi;
     double _epsilon;
     int _Lsteps;
     unsigned int _base_seed;

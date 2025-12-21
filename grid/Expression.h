@@ -7,15 +7,15 @@
 
 class LatticeBase;
 
-template<typename FieldType>
+template<typename FieldType, int d>
 class Lattice;
 
-template<typename FieldType>
+template<typename FieldType, int d>
 class VectorField;
 
 // Forward declare Grad so UnaryGrad::func can see it
-template<typename FieldType>
-VectorField<FieldType> Grad( int ss, const Lattice<FieldType>&);
+template<typename FieldType, int d>
+VectorField<FieldType, d> Grad( int ss, const Lattice<FieldType, d>&);
 
 class LatticeExpression{};
 
@@ -127,8 +127,8 @@ GRID_BINOP_RIGHT(operator||, BinaryOrOr);
 /********************
  * Evaluation
  ********************/
-template <class FieldType>
-auto eval(const uint64_t ss, const Lattice<FieldType> &arg){ return arg(ss); }
+template <class FieldType, int d>
+auto eval(const uint64_t ss, const Lattice<FieldType, d> &arg){ return arg(ss); }
 
 template <typename T>
 inline std::enable_if_t<std::is_arithmetic<T>::value, T>
