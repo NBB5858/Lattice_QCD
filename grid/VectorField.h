@@ -11,17 +11,12 @@ public:
     VectorField() {for(int i=0; i<d; ++i) _val[i] = FieldType();}
     explicit VectorField(FieldType el) {for(int i=0; i<d; ++i) _val[i] = el;}
 
-    // BE AFRAID OF GOING OOB. Where is this used? make this private?
     FieldType& operator[](int i) { return _val[i]; }
+    const FieldType& operator[](int i) const { return _val[i]; }
 
     const std::array<FieldType, d>& val() const { return _val; }
 
     void print() { std::cout << "("; for( FieldType el : _val ){el.print(); std::cout << ",";} std::cout << ")"; }
-
-    // static inline void generate_momenta(ScalarField& P, pRNG) {
-    //     gaussian(pRNG, P);
-    //     P = std::sqrt(2) * P;
-    // }
 
     template<typename RNG>
     void Randomize(RNG& rng) {
@@ -73,5 +68,14 @@ private:
 };
 
 
+template<typename Inner, int d>
+auto trace(const VectorField<Inner, d>& V) {
+
+    using InnerTrace = decltype(trace(V[0]));
+    VectorField<InnerTrace, d> ret;
+
+    for (int i = 0; i < d; ++i) ret[i] = trace(V[i]);
+    return ret;
+}
 
 #endif //VECTORFIELD_H

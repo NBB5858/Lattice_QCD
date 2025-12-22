@@ -7,6 +7,7 @@
 #include "Grid.h"
 #include "Expression.h"
 #include "RNG.h"
+#include "GaugeField.h"
 
 class LatticeBase {};
 
@@ -89,7 +90,6 @@ public:
     }
 
     // make new friends idiom; creates a new grad for each specialization of lattice
-    // use SINFAE to ensure this doesn't operate on U_{mu}?
     friend VectorField<FieldType, d> Grad( int ss, const Lattice& lat ) {
 
         VectorField<FieldType, d> ret;
@@ -116,25 +116,24 @@ public:
         return ret;
     }
 
-    //
-    // if the lattice type is a vector of gauge fields, then this should be defined. use SINFAE?
 
-    // template<typename GaugeField>
-    // GaugeField plaquette(int ss, int mu, int nu, const Lattice<VectorField<GaugeField>>& U, GridBase* grid ) {
-    //
-    //     int ss;
-    //     int right = grid->_stencil.neighbors[ss].p[mu];
-    //     int up = grid->_stencil.neighbors[ss].p[nu];
-    //     int right_up = grid->_stencil.neighbors[right].p[nu];
-    //
-    //     // each site stores just a field, not a field and it's inverse
-    //     U(ss)[mu] * U(right)[nu] * inverse(U(up)[mu]) * inverse(U(ss)[nu]);
-    //
-    // }
+    template<typename GroupElement,
+             typename = std::enable_if_t<is_group<GroupElement>::value>>
+    VectorField<VectorField<GroupElement, d>, d>
+    plaq(int ss, const Lattice<VectorField<GroupElement, d>, d>& U ) {
 
+        VectorField<VectorField<GroupElement, d>, d> ret;
 
+        for(int mu=0; mu<d; ++mu) {
+            for(int nu=0; nu<d; ++nu) {
+                int right = U.grid->_stencil.neighbors[ss].p[mu];
+                int up = U.grid->_stencil.neighbors[ss].p[nu];
 
-
+                ret[mu][nu] = U._mem[ss][mu] * U._mem[right][nu] * adj(U._mem[up][mu]) * adj(U._mem[ss][nu]);
+            }
+        }
+        return ret;
+    }
 
 
 

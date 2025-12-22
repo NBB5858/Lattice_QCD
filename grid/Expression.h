@@ -39,12 +39,16 @@ struct name {								\
 template<class _arg> static auto func(const _arg& a) -> decltype(ret) { return ret; } \
 };
 
+GridUnopClass(UnaryTrace, Trace(a));
+
 #define GRID_UNOP(name)  name
 
 #define GRID_DEF_UNOP(op, name)						\
 template <typename T1, typename std::enable_if<is_lattice<T1>::value||is_lattice_expr<T1>::value,T1>::type * = nullptr> \
 inline auto op(const T1 &arg) ->decltype(LatticeUnaryExpression<GRID_UNOP(name),T1>(GRID_UNOP(name)(), arg)) \
 { return LatticeUnaryExpression<GRID_UNOP(name),T1>(GRID_UNOP(name)(), arg); }
+
+GRID_DEF_UNOP(trace, UnaryTrace);
 
 /********************
  * Extended Unary operations
@@ -56,6 +60,8 @@ template<class _arg> static auto func(const uint64_t ss, const _arg& a) -> declt
 
 GridExtUnOpClass(UnaryGrad, Grad(ss, a));
 GridExtUnOpClass(UnaryBox, Box(ss, a));
+GridExtUnOpClass(UnaryPlaq, Plaq(ss, a));
+
 
 #define GRID_EXT_UNOP(name)  name
 
@@ -66,6 +72,7 @@ inline auto op(const T1 &arg) ->decltype(LatticeExtendedUnaryExpression<GRID_EXT
 
 GRID_DEF_EXTENDED_UNOP(grad, UnaryGrad);
 GRID_DEF_EXTENDED_UNOP(box, UnaryBox);
+GRID_DEF_EXTENDED_UNOP(plaq, UnaryPlaq);
 
 /********************
  * Binary operations
