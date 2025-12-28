@@ -4,6 +4,8 @@
 // uncomment to turn OFF parallelization
 //#define GRID_FORCE_SERIAL
 
+#include "Fields/ScalarField.h"
+
 #ifdef _OPENMP
   #ifndef GRID_FORCE_SERIAL
     #define GRID_OMP
@@ -28,6 +30,11 @@ DO_PRAGMA(omp parallel for schedule(static)) for(uint64_t i=0; i<num; i++ ) {__V
 
 #define thread_sum( i, num, out, ... ) \
 DO_PRAGMA(omp parallel for reduction(+:out)) for(uint64_t i=0; i<num; i++) {__VA_ARGS__};
+
+// DO_PRAGMA(omp declare reduction (field_sum:ScalarField:omp_out=omp_out+omp_in) initializer(omp_priv=ScalarField(0.0)))
+
+// #define thread_field_sum( i, num, out, ... ) \
+// DO_PRAGMA(omp parallel for reduction(field_sum:out)) for(uint64_t i=0; i<num; i++) {__VA_ARGS__};
 
 #define thread_for2d( i1, n1, i2, n2, ...) \
 DO_PRAGMA(omp parallel for collapse(2)) \

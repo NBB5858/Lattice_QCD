@@ -7,7 +7,7 @@
 
 #include "Grid.h"
 #include "Lattice.h"
-#include "ScalarField.h"
+#include "Fields/ScalarField.h"
 #include "VectorField.h"
 #include "Expression.h"
 #include "Reductions.h"

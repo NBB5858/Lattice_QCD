@@ -50,16 +50,11 @@ public:
 
     const Lattice<FieldType, d>& Lat() const {return _phi;}
 
-    void RandomizeLattice( Lattice<ScalarField, d>& L, std::vector<RNGType>& rngs ) {
-        thread_for(ss, _grid->osites(), {
-            int thread = thread_num(ss);
-            L.Randomize(ss, rngs[thread]);
-        });
-    }
+
 
     void hmc_step() {
         Lattice<FieldType, d> P(_grid);
-        RandomizeLattice(P, _Prngs);
+        P.RandomizeLattice(_Prngs);
 
         // make a copy constructor
         Lattice<FieldType, d> phi_tmp(_grid);
@@ -90,7 +85,7 @@ public:
     }
 
     void Run() {
-        RandomizeLattice(_phi, _Phirngs);
+        _phi.RandomizeLattice(_Phirngs);
 
         for(int i = 0; i < _nsteps; ++i) {
             hmc_step();
