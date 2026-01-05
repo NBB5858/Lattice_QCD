@@ -3,13 +3,16 @@
 #define LATTICE_H
 
 #include <iostream>
-#include <Eigen/Dense>
+#include <vector>
+#include <array>
+#include <cassert>
 
 #include "Grid.h"
 #include "Expression.h"
 #include "RNG.h"
 #include "GaugeField.h"
 #include "ColorMatrix.h"
+#include "Fields/U1Field.h"
 
 class LatticeBase {};
 
@@ -29,15 +32,17 @@ class Lattice : public LatticeBase {
     using ConstView = typename FieldTraits<FieldType>::ConstView;
 
     GridBase<d>* _grid;
-    aligned_vector<Storage> _mem;
+    aligned_vector<Storage> _mem{};
 
 public:
     GridBase<d>* grid() const { return _grid; }
 
-    // doesn't initialize correctly?
-    explicit Lattice(GridBase<d>* grid) : _grid(grid) {
-        _mem.resize(_grid->_osites);
-    };
+    explicit Lattice(GridBase<d>* grid) :
+    _grid(grid),
+    _mem(static_cast<size_t>(grid->_osites))
+    {
+        for (auto& x : _mem) FieldTraits<FieldType>::set_zero(x);
+    }
 
 
     const Storage& operator()(int ss) const { return _mem[ss]; }
@@ -100,23 +105,15 @@ public:
     };
 
     template <typename T1,
-              typename std::enable_if<is_lattice<T1>::value || is_lattice_expr<T1>::value, int>::type = 0>
-    inline Lattice& operator+=(const T1 &expr) {
-        thread_for(ss, _grid->_osites, {
-            auto tmp = eval(ss, expr);
-            this->_mem[ss] += tmp;
-        });
-        return *this;
-    };
+              std::enable_if_t<is_lattice<T1>::value || is_lattice_expr<T1>::value, int> = 0>
+    inline Lattice& operator+=(const T1& expr) {
+        return *this = (*this + expr);
+    }
 
     template <typename T1,
-              typename std::enable_if<is_lattice<T1>::value || is_lattice_expr<T1>::value, int>::type = 0>
-    inline Lattice& operator-=(const T1 &expr) {
-        thread_for(ss, _grid->_osites, {
-            auto tmp = eval(ss, expr);
-            this->_mem[ss] -= tmp;
-        });
-        return *this;
+              std::enable_if_t<is_lattice<T1>::value || is_lattice_expr<T1>::value, int> = 0>
+    inline Lattice& operator-=(const T1& expr) {
+        return *this = (*this - expr);
     }
 
     friend std::array<Storage, d> Grad( int ss, const Lattice& lat ) {
@@ -163,51 +160,40 @@ public:
         return trace_sum;
     }
 
-    friend std::array<Storage, d> StapleSum(int ss, const Lattice& U ) {
+    friend Storage StapleSum(int ss, const Lattice& U) {
 
-        std::array<Storage, d> staple_sum;
+        Storage staple_sum;
+        FieldTraits<FieldType>::set_zero(staple_sum);
 
-        for(int mu=0; mu<d; ++mu) staple_sum[mu] = 0;
+        const int x = ss;
 
-        for(int mu=0; mu<d; ++mu) {
-            for(int nu=0; nu<d; ++nu) {
-                if(nu==mu) continue;
+        for (int mu = 0; mu < d; ++mu) {
+            for (int nu = 0; nu < d; ++nu) {
+                if (nu == mu) continue;
 
-                int x = ss;
-                int x_plus_mu = U._grid->_stencil.neighbors[x].p[mu];
-                int x_plus_nu = U._grid->_stencil.neighbors[x].p[nu];
-                int x_minus_nu = U._grid->_stencil.neighbors[x].m[nu];
+                const int x_plus_mu = U._grid->_stencil.neighbors[x].p[mu];
+                const int x_plus_nu = U._grid->_stencil.neighbors[x].p[nu];
+                const int x_minus_nu = U._grid->_stencil.neighbors[x].m[nu];
 
-                staple_sum += U._mem[x][nu] * U._mem[x_plus_nu][mu] * adj(U._mem[x_plus_mu][nu]);
+                staple_sum[mu] += U._mem[x][nu]
+                                * U._mem[x_plus_nu][mu]
+                                * adj(U._mem[x_plus_mu][nu]);
 
-                int x_minus_nu_plus_mu = U._grid->_stencil.neighbors[x_minus_nu].p[mu];
 
-                staple_sum += adj(U._mem[x_minus_nu][nu]) * U._mem[x_minus_nu][mu] * U._mem[x_minus_nu_plus_mu][nu];
+                const int x_minus_nu_plus_mu = U._grid->_stencil.neighbors[x_minus_nu].p[mu];
+                staple_sum[mu] += adj(U._mem[x_minus_nu][nu])
+                                * U._mem[x_minus_nu][mu]
+                                * U._mem[x_minus_nu_plus_mu][nu];
             }
         }
+
         return staple_sum;
     }
 
-    // Does not need to be extended unary. Fix.
-    friend std::array<Storage, d> TA(int ss, const Lattice& U) {
-        return TracelessAntiHermitian(ss);
+    friend Storage exp(int ss, const Lattice& P) {
+        return FieldTraits<FieldType>::exp(P._mem[ss]);
     }
 
 };
-
-
-template<typename Storage, std::size_t d>
-Storage Dot(const std::array<Storage, d>& V1, const std::array<Storage, d>& V2) {
-    Storage ret{};
-    for (int i = 0; i < d; ++i) ret += V1[i] * V2[i];
-    return ret;
-}
-
-template<typename Storage, std::size_t d>
-std::array<Storage, d> operator*(const std::array<Storage, d>& V1, const std::array<Storage, d>& V2) {
-    std::array<Storage, d> ret{};
-    for (int i = 0; i < d; ++i) ret[i] = V1[i] * V2[i];
-    return ret;
-}
 
 #endif //LATTICE_H

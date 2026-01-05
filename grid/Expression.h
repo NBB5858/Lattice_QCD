@@ -1,25 +1,16 @@
-//
-// Created by Noah bittermann on 12/7/25.
-//
-
 #ifndef EXPRESSION_H
 #define EXPRESSION_H
+
+#include "ArrayOpOverloads.h"
 
 class LatticeBase;
 
 template<typename FieldType, int d>
 class Lattice;
 
+// not sure you need this forward declaration
 template <typename Storage, std::size_t d>
 Storage Dot(const std::array<Storage, d>&, const std::array<Storage, d>&);
-
-// template<typename FieldType, int d>
-// class VectorField;
-
-// Forward declare Grad so UnaryGrad::func can see it
-// do i need this uncommented?
-// template<typename FieldType, int d>
-// VectorField<FieldType, d> Grad( int ss, const Lattice<FieldType, d>&);
 
 class LatticeExpression{};
 
@@ -43,12 +34,27 @@ struct name {								\
 template<class _arg> static auto func(const _arg& a) -> decltype(ret) { return ret; } \
 };
 
+GridUnOpClass(UnaryTrace, trace(a));
+GridUnOpClass(UnaryAdj, adj(a));
+GridUnOpClass(UnaryTA, TA(a));
+GridUnOpClass(UnaryU1Exp, U1exp(a));
+GridUnOpClass(UnarySU2Exp, SU2exp(a));
+GridUnOpClass(UnaryGenericExp, genericExp(a));
+
+
 #define GRID_UNOP(name)  name
 
 #define GRID_DEF_UNOP(op, name)						\
 template <typename T1, typename std::enable_if<is_lattice<T1>::value||is_lattice_expr<T1>::value,T1>::type * = nullptr> \
 inline auto op(const T1 &arg) ->decltype(LatticeUnaryExpression<GRID_UNOP(name),T1>(GRID_UNOP(name)(), arg)) \
 { return LatticeUnaryExpression<GRID_UNOP(name),T1>(GRID_UNOP(name)(), arg); }
+
+GRID_DEF_UNOP(trace, UnaryTrace);
+GRID_DEF_UNOP(adj, UnaryAdj);
+GRID_DEF_UNOP(TA, UnaryTA);
+GRID_DEF_UNOP(U1exp, UnaryU1Exp);
+GRID_DEF_UNOP(SU2exp, UnarySU2Exp);
+GRID_DEF_UNOP(genericExp, UnaryGenericExp);
 
 /********************
  * Extended Unary operations
@@ -61,8 +67,7 @@ template<class _arg> static auto func(const uint64_t ss, const _arg& a) -> declt
 GridExtUnOpClass(UnaryGrad, Grad(ss, a));
 GridExtUnOpClass(UnaryBox, Box(ss, a));
 GridExtUnOpClass(UnaryPlaqReTraceSum, PlaqReTraceSum(ss, a));
-GridExtUnOpClass(UnaryStapleSum, StapleSum(ss, a))
-GridExtUnOpClass(UnaryTA, TA(ss, a));
+GridExtUnOpClass(UnaryStapleSum, StapleSum(ss, a));
 
 #define GRID_EXT_UNOP(name)  name
 
@@ -75,7 +80,6 @@ GRID_DEF_EXTENDED_UNOP(grad, UnaryGrad);
 GRID_DEF_EXTENDED_UNOP(box, UnaryBox);
 GRID_DEF_EXTENDED_UNOP(plaqReTraceSum, UnaryPlaqReTraceSum);
 GRID_DEF_EXTENDED_UNOP(stapleSum, UnaryStapleSum);
-GRID_DEF_EXTENDED_UNOP(TA, UnaryTA);
 
 /********************
  * Binary operations
@@ -117,6 +121,7 @@ GRID_BINOP_LEFT(operator&&, BinaryAndAnd);
 GRID_BINOP_LEFT(operator||, BinaryOrOr);
 GRID_BINOP_LEFT(dot, BinaryDot);
 
+
 #define GRID_BINOP_RIGHT(op, name)					\
 template <typename T1, typename T2,					\
 typename std::enable_if<!is_lattice<T1>::value&&!is_lattice_expr<T1>::value,T1>::type * = nullptr, \
@@ -137,8 +142,9 @@ GRID_BINOP_RIGHT(operator||, BinaryOrOr);
 /********************
  * Evaluation
  ********************/
-template <class FieldType, int d>
-auto eval(const uint64_t ss, const Lattice<FieldType, d> &arg){ return arg(ss); }
+
+template <class Storage, int d>
+auto eval(const uint64_t ss, const Lattice<Storage, d> &arg){ return arg(ss); }
 
 template <typename T>
 inline std::enable_if_t<std::is_arithmetic<T>::value, T>

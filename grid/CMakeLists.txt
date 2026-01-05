@@ -16,12 +16,17 @@ add_executable(run_sim run_sim.cpp
         Action.h
         HMC.h
         RNG.h
-        observables.h
+        Observables/Magnetization.h
         io.cpp
         GaugeField.h
         ColorMatrix.h
         Fields/U1Field.h
         Fields/FieldBase.h
+        HMC_gauge.h
+        ArrayOpOverloads.h
+        Observables/AvgPlaquette.h
+        Observables/ObservableBase.h
+        Integrators/LeapFrog.h
 )
 
 add_executable(run_sim_gauge run_sim_gauge.cpp
@@ -37,9 +42,10 @@ add_executable(run_sim_gauge run_sim_gauge.cpp
         Action.h
         HMC.h
         RNG.h
-        observables.h
+        Observables/Magnetization.h
         io.cpp
         GaugeField.h
+        ArrayOpOverloads.h
 )
 
 #add_executable(tests tests.cpp
@@ -57,11 +63,10 @@ target_link_libraries(run_sim PRIVATE OpenMP::OpenMP_CXX)
 target_link_libraries(run_sim_gauge PRIVATE OpenMP::OpenMP_CXX)
 
 find_package(Eigen3 REQUIRED)
-target_link_libraries(run_sim_gauge PRIVATE Eigen3::Eigen)
 target_link_libraries(run_sim PRIVATE Eigen3::Eigen)
+target_link_libraries(run_sim_gauge PRIVATE Eigen3::Eigen)
 
-target_compile_options(run_sim_gauge PRIVATE -O3 -march=native)
-target_compile_options(run_sim PRIVATE -O3 -march=native)
-
+target_compile_options(run_sim PRIVATE -march=native)
+target_compile_options(run_sim_gauge PRIVATE -march=native)
 
 

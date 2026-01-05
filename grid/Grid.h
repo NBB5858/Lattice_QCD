@@ -12,7 +12,7 @@ public:
 
     static void SetMaxThreads() {
 #ifdef GRID_OMP
-        _threads = omp_get_max_threads();
+        _threads=omp_get_max_threads();
         omp_set_num_threads(_threads);
 #else
         _threads = 1;

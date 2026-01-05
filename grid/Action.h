@@ -2,6 +2,7 @@
 #define ACTION_H
 
 #include "Fields/ScalarField.h"
+#include "Fields/U1Field.h"
 #include "Reductions.h"
 #include "Lattice.h"
 
@@ -29,28 +30,27 @@ private:
 };
 
 
-template<typename GroupElement>
-class GaugeAction {
+template<typename GaugeField>
+class WilsonAction {
 public:
-    explicit GaugeAction(double beta) : _beta(beta) {};
+    explicit WilsonAction(double beta) : _beta(beta) {};
 
     template<int d>
-    double S(const Lattice<VectorField<GroupElement, d>, d>& U) const {
-        auto n = static_cast<double>(GroupElement::groupdim);
-        return _beta * ( 1 - sum(plaqTraceSum(U), U.grid()).val() / n );
+    double S(const Lattice<GaugeField, d>& U) const {
+        const double Nd = static_cast<double>(U.grid()->dims().size());
+        const double os = static_cast<double>(U.grid()->osites());
+        const double Nplaq = os * Nd * (Nd - 1.0) / 2.0;
+        return _beta * ( Nplaq - (1.0/N) * sum(plaqReTraceSum(U), U.grid()) );
     }
 
     template<int d>
-    auto Force(const Lattice<VectorField<GroupElement, d>, d>& U) const {
-
-
-
-
-
+    auto Force(const Lattice<GaugeField, d>& U) const {
+        return (_beta / N) * TA( U * adj(stapleSum(U)) );
     }
 
 private:
     double _beta;
+    double N = static_cast<double>(FieldTraits<GaugeField>::groupdim);
 };
 
 
