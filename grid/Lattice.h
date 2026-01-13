@@ -10,7 +10,6 @@
 #include "Grid.h"
 #include "Expression.h"
 #include "RNG.h"
-#include "GaugeField.h"
 #include "ColorMatrix.h"
 #include "Fields/U1Field.h"
 

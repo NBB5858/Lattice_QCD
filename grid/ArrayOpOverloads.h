@@ -6,7 +6,7 @@
 #include <array>
 
 template<typename S, typename T, std::size_t N,
-         typename std::enable_if<std::is_arithmetic<S>::value, int>::type = 0>
+         std::enable_if_t<std::is_arithmetic_v<S>, int> = 0>
 std::array<T, N> operator*(S c, const std::array<T, N>& V) {
     std::array<T, N> ret{};
     for (std::size_t i = 0; i < N; ++i) {ret[i] = c * V[i];}
@@ -14,7 +14,7 @@ std::array<T, N> operator*(S c, const std::array<T, N>& V) {
 }
 
 template<typename S, typename T, std::size_t N,
-         typename std::enable_if<std::is_arithmetic<S>::value, int>::type = 0>
+         std::enable_if_t<std::is_arithmetic_v<S>, int> = 0>
 std::array<T, N> operator*(const std::array<T, N>& V, S c) {
     return c * V;
 }

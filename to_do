@@ -18,6 +18,8 @@ make the policies structs
 why did you put the template header in the policy functions themselves?
 
 
+review all your uses of constant and ensure they make sense
+
 
 
 Note for the read me
@@ -34,6 +36,101 @@ the lattice class.  This is tricky to break, and annoying to maintain / debug.
 
 Our solution will just be to repeat code.  Our goal is to make interesting scientific measurements,
 not to build good software that no one will use anyway.  We'll view each each class as a separate experiment.
+
+
+A different note
+There are three things which are challenging here. (1) the class design (2) making it fast (3) the physics.
+I've attempted to do well at (1) already, and have accomplished basic things, such implementing a policy-host pattern,
+where similar ot CRTP, the policy has access to the data within host. This is all to avoid runtime polymorphism.  At
+some point, I will come back to this.
+
+Now forgetting about (1) altogether, I'm going to focus (2) and (3) with procedural code,
+so as to not get preoccupied by design patterns.  The goal is understand what it takes to write truly
+fast code specialized for a very specific numerical measurement.
+
+
+at some point, you need to think harder about color vectors vs. spacetime vectors
+if grid's dimensions are not know at runtime, then it is hard to make spacetime vectors
+that are templated on dimension. This is because we have a gradient function in lattice,
+and we can't know the return type until runtime
+
+On the other hand, we should be able to make color vectors templated on their size.
+right now, we use FieldType(int d) in lattice, and we have ScalarField(int /*d*/) : _val(1.0){};
+This is kind of sloppy, so will need to fix it at some point.
+Might have to do something like
+
+Lattice.reserve(VectorSites);
+for(int ss=0; ss < Vectorsites; ++ss) Lattice.emplace_back(dim of vector);
+
+
+check that when you are adding vectors, you are not recopying things unecessarily
+you could be more intelligent about redundant includes
+
+check to see if you're using references in constructors. this can be dangerous
+unless you ACTUALLY want multiple instances of the class to share that same data.
+
+
+derivative operators can only act on lattices directly, e.g. box(phi) works
+but not box(2*phi) or box(2*phi), because box is acting on lattice expressions
+
+after doing that, you might get a hanging reference when returning an expression such as
+box(2*phi).  Check on this, and if so, wrap types.
+
+scalarfield and vectorfield both have randomize methods. can I think of them as inheriting from
+something else with a randomize method that will be overriden? does that work with templates?
+something like an abstract base type for fields, which the templated things inherit from?
+and the ABC will have default functions that need to be implemented by children.
+
+When you measure, you only need to measure a single euclidean time slice.  However, you're summing over all
+and then dividing by temp. Is there anything to be gained by doing this? is it substantially slower?
+
+
+fix the seeding of the random number generators
+
+is there a better way to ensure that you can't do e.g. plaquettes of vectorfields that don't hold group elements?
+make friend of particular specialzation of the lattice?
+
+put in something to stop the user doing e.g. a sum over lattice<GroupElement>, or vectorfields thereof.
+this won't make any sense
+
+make a note admitting that this isn't a super intelligent implementation of different tensor objects.
+to avoid make lots of bespoke things like U_{\mu \nu}, or imposing different symmetry constraints,
+just try to do calculations on the fly, e.g. in ReTrPlaqSum. Rule of thumb is to try to avoid two-index objects by putting them
+in intermediate calculations, unless I cannot.
+
+you rely on default constructors too much;
+sometimes they'll default to zero, sometimes to identify, and
+it's not clear. make this more explicit
+
+Go through rules of 5 and make constructs / destructors for lattice.
+would like to be able to do auto Gamma = grad(phi), and things like that.
+
+do you still need the wrap types?
+
+TA should not be extended unary, fix this.
+
+single threaded code is not working for some reason, come back to this.
+
+templating is annoying because
+template<typename T>
+func
+
+is so generic. if i have multiple things called func, it's hard to not have name clashes, and end up calling the
+wrong function on something
+
+check to make sure that u1 works if you define field in 1d matrix wrapper or as a complex double
+
+Ask chatgpt to fix your initializations, I think many of them like ret{} don't initialize to zero, and that's a problem
+
+Grid_init
+
+put in wqrning about this U = Box(U);   // if Box(U)[ss] uses U[ss±mu], updating U[ss] in place corrupts later sites
+
+http://const.me/articles/simd/simd.pdf
+
+
+
+
 
 
 

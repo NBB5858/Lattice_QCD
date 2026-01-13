@@ -5,7 +5,8 @@
 #include "Grid.h"
 #include "Expression.h"
 
-
+// don't think these need to be auto, unless I want to sum something like V_{\mu}(x);
+// simplify this later
 template<typename FieldType, int d>
 inline auto sum(const Lattice<FieldType, d>& expr, const GridBase<d>* grid)
     -> decltype(eval(0, expr))

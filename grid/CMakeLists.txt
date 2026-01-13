@@ -7,7 +7,7 @@ add_executable(run_sim run_sim.cpp
                     Grid.h
                     lattice.h
         Fields/ScalarField.h
-                    VectorField.h
+        ../scratch/VectorField.h
                     Stencil.h
                     Expression.h
                     pragma_shorts.h
@@ -18,7 +18,7 @@ add_executable(run_sim run_sim.cpp
         RNG.h
         Observables/Magnetization.h
         io.cpp
-        GaugeField.h
+        ../scratch/GaugeField.h
         ColorMatrix.h
         Fields/U1Field.h
         Fields/FieldBase.h
@@ -27,13 +27,14 @@ add_executable(run_sim run_sim.cpp
         Observables/AvgPlaquette.h
         Observables/ObservableBase.h
         Integrators/LeapFrog.h
+        Fields/SU2Field.h
 )
 
 add_executable(run_sim_gauge run_sim_gauge.cpp
         Grid.h
         lattice.h
         Fields/ScalarField.h
-        VectorField.h
+        ../scratch/VectorField.h
         Stencil.h
         Expression.h
         pragma_shorts.h
@@ -44,7 +45,7 @@ add_executable(run_sim_gauge run_sim_gauge.cpp
         RNG.h
         Observables/Magnetization.h
         io.cpp
-        GaugeField.h
+        ../scratch/GaugeField.h
         ArrayOpOverloads.h
 )
 

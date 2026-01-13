@@ -1,3 +1,6 @@
+// uncomment to turn OFF parallelization
+#define GRID_FORCE_SERIAL
+
 
 #include <fstream>
 #include <iostream>
@@ -77,7 +80,7 @@ int main() {
     std::cout << "Threads: " << GridThread::GetThreads() << std::endl;
 
     constexpr int dimension = 4;
-    constexpr std::array<int, dimension> dims({5, 5, 5, 5});
+    constexpr std::array<int, dimension> dims({5, 5, 5,5});
 
     GridBase<dimension> Grid(dims);
 

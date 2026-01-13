@@ -29,7 +29,7 @@ int main() {
 
     std::uniform_real_distribution<> uniform_dist(0.0, 1.0);
 
-    std::ofstream file("../data/magnetization.csv", std::ios::binary);
+    std::ofstream file("../temp_data/magnetization.csv", std::ios::binary);
 
     rng.seed(42);
 

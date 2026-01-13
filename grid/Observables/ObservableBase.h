@@ -1,8 +1,6 @@
 #ifndef OBSERVABLEBASE_H
 #define OBSERVABLEBASE_H
 
-#endif //OBSERVABLEBASE_H
-
 class ObservableBase {
 public:
 
@@ -42,3 +40,5 @@ public:
 protected:
     std::size_t _nobs;
 };
+
+#endif //OBSERVABLEBASE_H
