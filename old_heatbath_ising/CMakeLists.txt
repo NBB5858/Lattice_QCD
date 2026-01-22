@@ -6,12 +6,12 @@ project(Lattice_QCD VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 
 #add_executable(run_simulation
-#        Old_heatbath_ising/run_simulation_parallel.cpp
-#        Old_heatbath_ising/lattice.h
-#        Old_heatbath_ising/energy.h
-#        Old_heatbath_ising/magnetization.h
-#        Old_heatbath_ising/io.cpp
-#        Old_heatbath_ising/io.h
+#        old_heatbath_ising/run_simulation_parallel.cpp
+#        old_heatbath_ising/lattice.h
+#        old_heatbath_ising/energy.h
+#        old_heatbath_ising/magnetization.h
+#        old_heatbath_ising/io.cpp
+#        old_heatbath_ising/io.h
 #        SIMD_Example/vectorized_add.cpp
 #        grid_test/Repro.cpp
 #        grid_test/Grid.cpp
@@ -19,11 +19,11 @@ set(CMAKE_CXX_STANDARD 17)
 #)
 
 #add_executable(test
-#        Old_heatbath_ising/test.cpp
-#        Old_heatbath_ising/lattice.h
-#        Old_heatbath_ising/energy.h
-#        Old_heatbath_ising/magnetization.h
-#        Old_heatbath_ising/io.cpp
-#        Old_heatbath_ising/io.h
+#        old_heatbath_ising/test.cpp
+#        old_heatbath_ising/lattice.h
+#        old_heatbath_ising/energy.h
+#        old_heatbath_ising/magnetization.h
+#        old_heatbath_ising/io.cpp
+#        old_heatbath_ising/io.h
 #)
 
