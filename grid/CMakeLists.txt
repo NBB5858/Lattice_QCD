@@ -41,11 +41,6 @@ find_package(OpenMP REQUIRED)
 target_link_libraries(run_sim PRIVATE OpenMP::OpenMP_CXX)
 target_link_libraries(run_sim_gauge PRIVATE OpenMP::OpenMP_CXX)
 
-find_package(Eigen3 REQUIRED)
-target_link_libraries(run_sim PRIVATE Eigen3::Eigen)
-target_link_libraries(run_sim_gauge PRIVATE Eigen3::Eigen)
-
-
 find_package(sleef CONFIG REQUIRED)
 target_link_libraries(run_sim PRIVATE sleef::sleef)
 target_link_libraries(run_sim_gauge PRIVATE sleef::sleef)
