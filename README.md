@@ -39,7 +39,6 @@ The core features of the framework are
 
 
 ### Requirements / Dependencies
- - A C++17 compatible compiler (e.g. g++ 7+, clang++ 7+)
  - AArch64 / Apple Silicon (M!/M2) when "USE_SIMD_ACROSS_SITES" is enabled (see CMake file)
  - OpenMP - a thread often "sleeps" after finishing its tasks while waiting for other threads. This creates overhead, and can be reduce by setting the OMP_WAIT_POLICY environment variables to ACTIVE and KMP_BLOCKTIME (the time a thread waits before sleeping) to some high number.
  - SLEEF - SIMD math library used for trig functions
