@@ -39,8 +39,8 @@ The core features of the framework are
 
 
 ### Requirements / Dependencies
- - AArch64 / Apple Silicon (M!/M2) when "USE_SIMD_ACROSS_SITES" is enabled (see CMake file)
- - OpenMP - a thread often "sleeps" after finishing its tasks while waiting for other threads. This creates overhead, and can be reduce by setting the OMP_WAIT_POLICY environment variables to ACTIVE and KMP_BLOCKTIME (the time a thread waits before sleeping) to some high number.
+ - AArch64 / Apple Silicon (M1/M2) when "USE_SIMD_ACROSS_SITES" is enabled (see [CMakeLists.txt](CMakeLists.txt))
+ - OpenMP when "USE_OPENMP" is enabled (see [CMakeLists.txt](CMakeLists.txt)).  A thread often "sleeps" after finishing its tasks while waiting for other threads. This creates overhead, and can be reduce by setting the OMP_WAIT_POLICY environment variables to ACTIVE and KMP_BLOCKTIME (the time a thread waits before sleeping) to some high number.
  - SLEEF - SIMD math library used for trig functions
 
 Some sample results can be found in [notebooks/Sample_Results.ipynb](notebooks/Sample_Results.ipynb)
