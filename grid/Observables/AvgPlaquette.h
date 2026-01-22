@@ -1,8 +1,12 @@
 #ifndef AVGPLAQUETTE_H
 #define AVGPLAQUETTE_H
 
+#include <cstddef>
+#include <vector>
+#include <cmath>
+
 #include "ObservableBase.h"
-#include "../Reductions.h"
+#include "../openmp/Reductions.h"
 
 class AvgPlaquette : public ObservableBase {
 public:
@@ -10,12 +14,12 @@ public:
 
     template<typename FieldType, int d>
     void measure(const Lattice<FieldType, d>& U) {
-        const double Nd = static_cast<double>(U.grid()->dims().size());
-        const double os = static_cast<double>(U.grid()->osites());
-        const double Nplaq = os * Nd * (Nd - 1.0) / 2.0;
-        double N = static_cast<double>(FieldTraits<FieldType>::groupdim);
+        const float Nd = static_cast<float>(U.grid()->dims().size());
+        const float nsites = static_cast<float>(U.grid()->nsites());
+        const float Nplaq = nsites * Nd * (Nd - 1.0f) / 2.0f;
+        float N = static_cast<float>(FieldTraits<FieldType>::groupdim);
 
-        double avg_plaq = (1.0/N) * sum(plaqReTraceSum(U), U.grid()) / Nplaq;
+        float avg_plaq = (1.0f/N) * sum(plaqReTraceSum(U), U.grid()) / Nplaq;
 
         _cache.emplace_back(avg_plaq);
     }

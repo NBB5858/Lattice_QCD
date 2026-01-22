@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "ObservableBase.h"
-#include "../Reductions.h"
+#include "../openmp/Reductions.h"
 
 class Magnetization : public ObservableBase {
 public:
@@ -12,8 +12,8 @@ public:
 
     template<typename FieldType, int d>
     void measure(const Lattice<FieldType, d>& U) {
-        auto osites = static_cast<double>(U.grid()->osites());
-        double mag = sum(U, U.grid()) / osites;
+        auto nsites = static_cast<double>(U.grid()->nsites());
+        double mag = sum(U, U.grid()) / nsites;
         _cache.emplace_back(mag);
     }
 };
