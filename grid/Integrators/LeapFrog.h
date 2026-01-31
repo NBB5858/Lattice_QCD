@@ -25,9 +25,7 @@ public:
         P   -= (0.5f) * _action.Force(phi) * _epsilon;
     }
 
-    // std::complex<float> H(Lattice<FieldType, d>& phi, Lattice<MomField, d>& P) {
-    //     return (0.5f) * sum(trace(dot(adj(P), P)), P.grid()) + _action.S(phi);
-    // }
+
      std::complex<float> H(Lattice<FieldType, d>& phi, Lattice<MomField, d>& P) {
         constexpr float N = static_cast<float>(FieldTraits<FieldType>::groupdim);
         return (0.5f / N) * sum(trace(dot(adj(P), P)), P.grid()) + _action.S(phi);

@@ -101,7 +101,7 @@ struct FieldTraits<SU2Momentum<d>> {
     static View view(Storage& x, int lane) { return View{ &x, lane }; }
     static ConstView view(const Storage& x, int lane) { return ConstView{ &x, lane }; }
 
-    // Random anti-Hermitian traceless su(2) momentum:
+
     // P = i (p1 sigma1 + p2 sigma2 + p3 sigma3)
     //   = [ i p3        p2 + i p1 ]
     //     [ -p2 + i p1  -i p3     ]

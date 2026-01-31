@@ -1,6 +1,6 @@
 # Lattice Gauge Code
 
-This respository implements a small lattice gauge simulation framework in C++.  The design is largely based off of [Grid](https://github.com/paboyle/Grid), though there are some differences in some design choices.
+This respository implements a small lattice gauge simulation framework in C++.  The design is largely based off of [Grid](https://github.com/paboyle/Grid), though there are differences in some choices.
 The core features of the framework are
 
 1. __Focus on Hamiltonian Monte Carlo__ 

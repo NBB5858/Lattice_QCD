@@ -42,7 +42,7 @@ public:
     {
         _nBlocks = grid->_osites;
         _nSites  = _nBlocks * W;
-        _mem.resize(static_cast<size_t>(_nBlocks)); // remember: resize calls the default constructor
+        _mem.resize(static_cast<size_t>(_nBlocks)); // resize calls the default constructor
     }
 
     GridBase<d>* grid() const { return _grid; }
@@ -145,7 +145,7 @@ public:
         const auto ssu = static_cast<std::uint64_t>(ss);
         const auto Ux  = U._mem[ss];
 
-        // Precompute x + e_mu for all mu (d gathers total)
+        // Precompute x + e_mu for all mu
         std::array<Storage, static_cast<std::size_t>(d)> Up{};
         for (int mu = 0; mu < d; ++mu) {
             Up[mu] = Cshift(U, ssu, unit_disp<d>(mu, +1));
@@ -182,10 +182,10 @@ public:
 
         const auto ssu = static_cast<std::uint64_t>(ss);
 
-        // Cache the local block once (saves repeated loads / aliasing)
+        // Cache the local block once
         const auto Ux = U._mem[ss];
 
-        // 1) Precompute unit shifts: x + e_a and x - e_a for all directions a
+        // Precompute unit shifts: x + e_a and x - e_a for all directions a
         std::array<Storage, static_cast<std::size_t>(d)> Up{};
         std::array<Storage, static_cast<std::size_t>(d)> Um{};
 
@@ -194,8 +194,7 @@ public:
             Um[a] = Cshift(U, ssu, unit_disp<d>(a, -1));
         }
 
-        // 2) Precompute mixed shifts: x - e_nu + e_mu for all mu != nu
-        //    (You only need [nu] out of this Storage later, but simplest is store full Storage.)
+        // Precompute mixed shifts: x - e_nu + e_mu for all mu != nu
         std::array<std::array<Storage, static_cast<std::size_t>(d)>, static_cast<std::size_t>(d)> Umnu_pm{};
 
         for (int mu = 0; mu < d; ++mu) {
@@ -205,7 +204,7 @@ public:
             }
         }
 
-        // 3) Accumulate staples using cached shifts
+        // Accumulate staples using cached shifts
         for (int mu = 0; mu < d; ++mu) {
             for (int nu = 0; nu < d; ++nu) {
                 if (nu == mu) continue;
